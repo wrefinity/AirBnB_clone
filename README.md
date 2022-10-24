@@ -10,7 +10,7 @@
 ## Authors :black_nib:
 
 * ** Andrew Ishaku Wreford **
-* ** David Atta **
+* ** David Atat **
 
 
 ## Description :label:
