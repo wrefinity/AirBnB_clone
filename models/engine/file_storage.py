@@ -2,8 +2,9 @@
 '''
 Module: FileStorage
 '''
-import os
+from os.path import exits
 import json
+from model.base_model import BaseModel
 
 
 class FileStorage():
@@ -32,3 +33,23 @@ class FileStorage():
         with open(FileStorage.__path, 'w') as file:
             dc = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
             json.dump(dc, file)
+
+    def reload(self):
+        '''
+        Deserialize the json file
+        '''
+        if not exits(FileStorage.__file_path):
+            return
+        classes_ = {'BaseModel': BaseModel}
+
+        with open(FileStorag.__file_path, 'r') as file:
+            de_serialize = None
+            try:
+                de_serialize = json.load(file)
+                if de_serialize is None:
+                    return
+            except json.JSONDecodeError:
+                pass
+            FileStorage__objects = {
+                    key: classes_[key.split('.')[0]](**val)
+                    for key, val in de_serialize.items()}
