@@ -30,9 +30,9 @@ class FileStorage():
         '''
         serializes __objects to the JSON file (path: __file_path)
         '''
-        with open(FileStorage.__file_path, 'w') as file:
+        with open(FileStorage.__file_path, 'w') as f:
             dc = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
-            json.dump(dc, file)
+            json.dump(dc, f)
 
     def reload(self):
         '''
@@ -42,10 +42,10 @@ class FileStorage():
             return
         model_classes = {'BaseModel': BaseModel}
 
-        with open(FileStorage.__file_path, 'r') as file:
+        with open(FileStorage.__file_path, "r") as f:
             de_serialize = None
             try:
-                de_serialize = json.load(file)
+                de_serialize = json.load(f)
                 if de_serialize is None:
                     return
             except json.JSONDecodeError:
