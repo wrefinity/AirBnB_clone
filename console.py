@@ -38,24 +38,11 @@ class HBNBCommand(cmd.Cmd):
         Ex: $ create BaseModel
         '''
         tokens = arg.split()
-        if not validator(tokens, check_id=False):
+        if not HBNBCommand.validator(tokens, check_id=False):
             return
         obj = HBNBCommand.model_classes[tokens[0]]()
         obj.save()
         print(obj.id)
-
-    def validator(tokens, check_id=False):
-        '''validate class entry'''
-        if not tokens:
-            print("* class name missing **")
-            return False
-        if tokens[0] not in HBNBCommand.model_classes.keys():
-            print("** class doesn't exist **")
-            return False
-        if len(tokens) < 2 and check_id:
-            print("** instance id missing **")
-            return False
-        return True
 
     def do_show(self, arg):
         '''
@@ -64,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
         Ex: $ show BaseModel 1234-1234-1234.
         '''
         tokens = arg.split()
-        if not validator(tokens, check_id=True):
+        if not HBNBCommand.validator(tokens, check_id=True):
             return
         storage.reload()
         objs = storage.all()
@@ -82,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
         Ex: $ destroy BaseModel 1234-1234-1234
         '''
         tokens = arg.split()
-        if not validator(tokens, check_id=True):
+        if not HBNBCommand.validator(tokens, check_id=True):
             return
         storage.reload()
         objs = storage.all()
@@ -113,6 +100,19 @@ class HBNBCommand(cmd.Cmd):
             print(["{}".format(str(v))
                   for _, v in objs.items() if type(v).__name__ == tokens[0]])
             return
+
+    def validator(tokens, check_id=False):
+        '''validate class entry'''
+        if not tokens:
+            print("* class name missing **")
+            return False
+        if tokens[0] not in HBNBCommand.model_classes.keys():
+            print("** class doesn't exist **")
+            return False
+        if len(tokens) < 2 and check_id:
+            print("** instance id missing **")
+            return False
+        return True
 
 
 if __name__ == '__main__':
