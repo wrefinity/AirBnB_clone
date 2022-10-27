@@ -2,9 +2,9 @@
 '''
 Module: FileStorage
 '''
-from os.path import exits
+from os.path import exists
 import json
-from model.base_model import BaseModel
+from models.base_model import BaseModel
 
 
 class FileStorage():
@@ -23,14 +23,14 @@ class FileStorage():
         '''
         sets in __objects the obj with key <obj class name>.id
         '''
-        key = "{}.{}".format(type(self).__name__, self.id)
+        key = "{}.{}".format(type(obj).__name__, obj.id)
         FileStorage.__objects[key] = obj
 
     def save(self) -> None:
         '''
         serializes __objects to the JSON file (path: __file_path)
         '''
-        with open(FileStorage.__path, 'w') as file:
+        with open(FileStorage.__file_path, 'w') as file:
             dc = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
             json.dump(dc, file)
 
@@ -38,11 +38,11 @@ class FileStorage():
         '''
         Deserialize the json file
         '''
-        if not exits(FileStorage.__file_path):
+        if not exists(FileStorage.__file_path):
             return
-        classes_ = {'BaseModel': BaseModel}
+        model_classes = {'BaseModel': BaseModel}
 
-        with open(FileStorag.__file_path, 'r') as file:
+        with open(FileStorage.__file_path, 'r') as file:
             de_serialize = None
             try:
                 de_serialize = json.load(file)
@@ -51,5 +51,5 @@ class FileStorage():
             except json.JSONDecodeError:
                 pass
             FileStorage__objects = {
-                    key: classes_[key.split('.')[0]](**val)
+                    key: model_classes[key.split('.')[0]](**val)
                     for key, val in de_serialize.items()}
