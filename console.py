@@ -4,15 +4,26 @@ Module: console.py
 '''
 
 import cmd
-from models.base_model import BaseModel
 from models import storage
 import re
+import json
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
 
 
 class HBNBCommand(cmd.Cmd):
     '''defines the entry point of the command interpreter'''
     prompt = "(hbnb)"
-    model_classes = {'BaseModel': BaseModel}
+    model_classes = {
+            'BaseModel': BaseModel, 'User': User,
+            'Amenity': Amenity, 'City': City, 'State': State,
+            'Place': Place, 'Review': Review
+            }
 
     def do_quit(self, arg):
         """ Quit command to exit the program """
@@ -101,7 +112,7 @@ class HBNBCommand(cmd.Cmd):
             print(["{}".format(str(v))
                   for _, v in objs.items() if type(v).__name__ == tokens[0]])
             return
-    
+
     def do_update(self, arg):
         tokens = arg.split()
         if not HBNBCommand.validator(tokens, check_id=True):
@@ -110,7 +121,6 @@ class HBNBCommand(cmd.Cmd):
         objs = storage.all()
         key = "{}.{}".format(tokens[0], tokens[1])
         obj_instance = objs.get(key, None)
-        
         if obj_instance is None:
             print("** no instance found **")
             return
@@ -130,7 +140,6 @@ class HBNBCommand(cmd.Cmd):
 
         if not HBNBCommand.validate_attrs(tokens):
             return
-        
         finder = re.findall(r"^[\"\'](.*?)[\"\']", tokens[3])
         if finder:
             setattr(obj_instance, tokens[2], finder[0])
@@ -138,7 +147,6 @@ class HBNBCommand(cmd.Cmd):
             vals = tokens[3].split()
             setattr(obj_instance, tokens[2], HBNBCommand.parse_str(vals[0]))
         storage.save()
-
 
     def validate_attrs(tokens):
         """ validate classname attributes and values."""
@@ -149,7 +157,6 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
             return False
         return True
-
 
     def validator(tokens, check_id=False):
         '''validate class entry'''
@@ -173,7 +180,7 @@ class HBNBCommand(cmd.Cmd):
             return float(parsed)
         else:
             return token
-    
+
     def is_float(tok):
         """Checks tok is float"""
         try:
@@ -187,12 +194,11 @@ class HBNBCommand(cmd.Cmd):
         """Check that tok is integer"""
         try:
             x = float(tok)
-            y= int(x)
+            y = int(x)
         except (TypeError, ValueError):
             return False
         else:
             return x == y
-
 
 
 if __name__ == '__main__':

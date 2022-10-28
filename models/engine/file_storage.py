@@ -5,6 +5,12 @@ Module: FileStorage
 from os.path import exists
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
 
 
 class FileStorage():
@@ -40,7 +46,10 @@ class FileStorage():
         '''
         if not exists(FileStorage.__file_path):
             return
-        model_classes = {'BaseModel': BaseModel}
+        model_classes = {
+                'BaseModel': BaseModel, 'User': User, 'Amenity': Amenity,
+                'City': City, 'State': State, 'Place': Place, 'Review': Review
+                }
 
         with open(FileStorage.__file_path, "r") as f:
             de_serialize = None
