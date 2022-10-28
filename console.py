@@ -6,6 +6,7 @@ Module: console.py
 import cmd
 from models.base_model import BaseModel
 from models import storage
+import re
 
 
 class HBNBCommand(cmd.Cmd):
@@ -78,7 +79,7 @@ class HBNBCommand(cmd.Cmd):
         if obj_instance is None:
             print("** no instance found **")
             return
-        del obj_instance[key]
+        del objs[key]
         storage.save()
 
     def do_all(self, arg):
@@ -100,6 +101,55 @@ class HBNBCommand(cmd.Cmd):
             print(["{}".format(str(v))
                   for _, v in objs.items() if type(v).__name__ == tokens[0]])
             return
+    
+    def do_update(self, arg):
+        tokens = arg.split()
+        if not HBNBCommand.validator(tokens, check_id=True):
+            return
+        storage.reload()
+        objs = storage.all()
+        key = "{}.{}".format(tokens[0], tokens[1])
+        obj_instance = objs.get(key, None)
+        
+        if obj_instance is None:
+            print("** no instance found **")
+            return
+
+        matcher = re.findall(r"{.*}", arg)
+        if matcher:
+            payload = None
+            try:
+                payload: dict = json.loads(matcher[0])
+            except Exception:
+                print("** invalid syntax")
+                return
+            for k, v in payload.items():
+                setattr(obj_instance, k, v)
+            storage.save()
+            return
+
+        if not HBNBCommand.validate_attrs(tokens):
+            return
+        
+        finder = re.findall(r"^[\"\'](.*?)[\"\']", tokens[3])
+        if finder:
+            setattr(obj_instance, tokens[2], finder[0])
+        else:
+            vals = tokens[3].split()
+            setattr(obj_instance, tokens[2], HBNBCommand.parse_str(vals[0]))
+        storage.save()
+
+
+    def validate_attrs(tokens):
+        """ validate classname attributes and values."""
+        if len(tokens) < 3:
+            print("** attribute name missing **")
+            return False
+        if len(tokens) < 4:
+            print("** value missing **")
+            return False
+        return True
+
 
     def validator(tokens, check_id=False):
         '''validate class entry'''
@@ -113,6 +163,36 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return False
         return True
+
+    def parse_str(token):
+        """Parse token to str or int or float"""
+        parsed = re.sub("\"", "", token)
+        if HBNBCommand.is_int(parsed):
+            return int(parsed)
+        elif HBNBCommand.is_float(parsed):
+            return float(parsed)
+        else:
+            return token
+    
+    def is_float(tok):
+        """Checks tok is float"""
+        try:
+            x = float(tok)
+        except (TypeError, ValueError):
+            return False
+        else:
+            return True
+
+    def is_int(tok):
+        """Check that tok is integer"""
+        try:
+            x = float(tok)
+            y= int(x)
+        except (TypeError, ValueError):
+            return False
+        else:
+            return x == y
+
 
 
 if __name__ == '__main__':
