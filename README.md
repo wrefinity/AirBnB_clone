@@ -9,8 +9,8 @@
 
 ## Authors :black_nib:
 
-* ** Andrew Ishaku Wreford **
-* ** David Atat **
+* Andrew Ishaku Wreford <wrefordmessi@gmail.com>
+* David Atat
 
 
 ## Description :label:

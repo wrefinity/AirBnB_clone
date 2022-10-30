@@ -59,6 +59,6 @@ class FileStorage():
                     return
             except json.JSONDecodeError:
                 pass
-            FileStorage__objects = {
+            FileStorage.__objects = {
                     key: model_classes[key.split('.')[0]](**val)
                     for key, val in de_serialize.items()}

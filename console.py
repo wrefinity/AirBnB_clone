@@ -148,6 +148,45 @@ class HBNBCommand(cmd.Cmd):
             setattr(obj_instance, tokens[2], HBNBCommand.parse_str(vals[0]))
         storage.save()
 
+    def precmd(self, arg):
+        """
+        Instructions to execute before arguments are interpreted
+        """
+        if not arg:
+            return '\n'
+
+        pattern = re.compile(r"(\w+)\.(\w+)\((.*)\)")
+        match_list = pattern.findall(arg)
+        if not match_list:
+            return super().precmd(arg)
+
+        matcher = match_list[0]
+        if not matcher[2]:
+            if matcher[1] == "count":
+                instance_objs = storage.all()
+                print(len([
+                    v for _, v in instance_objs.items()
+                    if type(v).__name__ == matcher[0]]))
+                return "\n"
+            return "{} {}".format(matcher[1], matcher[0])
+        else:
+            args = matcher[2].split(", ")
+            if len(args) == 1:
+                return "{} {} {}".format(
+                    matcher[1], matcher[0],
+                    re.sub("[\"\']", "", matcher[2]))
+            else:
+                json_match = re.findall(r"{.*}", matcher[2])
+                if (json_match):
+                    return "{} {} {} {}".format(
+                        matcher[1], matcher[0],
+                        re.sub("[\"\']", "", args[0]),
+                        re.sub("\'", "\"", json_match[0]))
+                return "{} {} {} {} {}".format(
+                    matcher[1], matcher[0],
+                    re.sub("[\"\']", "", args[0]),
+                    re.sub("[\"\']", "", args[1]), args[2])
+
     def validate_attrs(tokens):
         """ validate classname attributes and values."""
         if len(tokens) < 3:
