@@ -1,11 +1,10 @@
 # AirBnB_clone
 
+## Description:
 
-
-
-<h1 align="center">HolbertonBnB</h1>
 <p align="center">An AirBnB clone.</p>
 
+AirBnB is a web application that includes a database technology via a backend interace and a front-end interface as a clone of AirBnB.
 
 ## Authors :black_nib:
 
@@ -14,14 +13,10 @@
 
 
 ## Description :label:
+=======
+The project is a team project as part of ALX Software Engineering program.
 
-
-HolbertonBnB is a web application that includes a database technology via a backend interace  and a front-end interface as a clone of AirBnB.
-
-the project is a team project as part of ALX Software Engineering program.
-
-## More infor
-### Execution in interative mode 
+## Execution in interative mode
 
 ```bash
 $ ./console.py
@@ -37,8 +32,7 @@ EOF  help  quit
 $
 ```
 
-### execution in non-interactive mode: (like the Shell project in C)
-
+## Execution in non-interactive mode: (like the Shell project in C)
 
 ```bash
 $ echo "help" | ./console.py
@@ -62,5 +56,7 @@ EOF  help  quit
 $
 ```
 
+## Authors:
 
-
+- [Andrew Ishaku Wreford](https://github.com/wrefinity/AirBnB_clone#holbertonbnb)
+- [David Atat](github.com/daveeazi)
